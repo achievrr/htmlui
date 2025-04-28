@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Getting Started with OwnPrint</title>
+
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    .brand-gradient {
+      background: linear-gradient(to right, #e6478d, #4c1d95);
+    }
+    .brand-btn {
+      background: linear-gradient(to right, #e6478d, #4c1d95);
+    }
+    .brand-btn:hover {
+      opacity: 0.9;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+
+  <!-- Header -->
+  <header class="bg-white shadow-sm">
+    <div class="container mx-auto py-6 px-4">
+      <h1 class="text-2xl font-bold text-gray-800">Getting Started with OwnPrint</h1>
+      <p class="text-gray-600">Easy-to-follow tutorials to connect your store, add products, and master the OwnPrint app.</p>
+    </div>
+  </header>
+
+  <!-- Main -->
+  <main class="container mx-auto py-8 px-4">
+
+    <!-- Platform selector -->
+    <div id="platform-selector" class="mb-8 flex flex-wrap justify-center gap-4"></div>
+
+    <!-- Intro -->
+    <section id="intro" class="bg-green-50 border border-green-100 rounded-lg p-4 mb-6">
+      <h2 id="intro-title" class="text-lg font-semibold text-green-800 mb-2">
+        Welcome to Your Shopify Integration
+      </h2>
+      <p id="intro-text" class="text-green-700">
+        These short, practical tutorials will guide you step-by-step from connecting your store and importing your first products, to mastering all the key features of the app.
+      </p>
+    </section>
+
+    <!-- Platform-specific banner -->
+    <div id="platform-banner" class="mb-6"></div>
+
+    <!-- Search -->
+    <section id="search-section" class="mb-6 relative">
+      <div class="relative">
+        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+          <svg class="w-4 h-4 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+          </svg>
+        </div>
+        <input type="search" id="search-input"
+               class="block w-full p-3 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-white focus:ring-blue-500 focus:border-blue-500"
+               placeholder="Search for tutorials...">
+        <button id="clear-search" class="absolute right-2.5 bottom-2.5 hidden bg-gray-200 hover:bg-gray-300 rounded-lg px-3 py-1 text-gray-700 text-sm">
+          Clear
+        </button>
+      </div>
+      <div id="search-results"
+           class="hidden mt-2 bg-white border border-gray-200 rounded-lg shadow-sm max-h-80 overflow-y-auto z-20 absolute left-0 right-0">
+      </div>
+    </section>
+
+    <!-- Progress -->
+    <!-- <section id="progress-section" class="mb-6"> -->
+      <!-- <div class="flex items-center justify-between mb-2">
+        <h3 class="text-gray-700 font-medium">Your Progress</h3>
+        <span id="progress-text" class="text-sm text-gray-600">0/0 completed</span>
+      </div>
+      <div class="w-full bg-gray-200 rounded-full h-2.5 overflow-hidden">
+        <div id="progress-bar" class="brand-gradient h-2.5 rounded-full" style="width:0%"></div>
+      </div>
+      <div class="flex justify-between mt-1">
+        <span class="text-xs text-gray-500">Just started</span>
+        <span class="text-xs text-gray-500">Complete!</span>
+      </div>-->
+    <!-- </section> -->
+
+    <!-- Tutorials -->
+    <section id="video-list" class="mb-8"></section>
+
+  </main>
+
+  <!-- Modal -->
+  <div id="video-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-lg overflow-hidden w-full max-w-4xl">
+      <div class="flex justify-between items-center border-b border-gray-200 px-6 py-4">
+        <h3 id="modal-title" class="text-lg font-bold"></h3>
+        <button id="close-modal" class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+      </div>
+      <div>
+        <div class="bg-black">
+          <iframe id="modal-iframe" width="100%" height="450" frameborder="0" allowfullscreen></iframe>
+        </div>
+        <!-- <div class="p-6">
+          <p id="modal-description" class="text-gray-700 mb-4"></p>
+          <button id="mark-completed" class="brand-btn text-white px-4 py-2 rounded-lg">
+            Mark as Completed
+          </button>
+        </div> -->
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Color schemes
+    const platformColors = {
+      shopify:     { bg:'bg-green-50',   border:'border-green-100', title:'text-green-800',   text:'text-green-700' },
+      etsy:        { bg:'bg-orange-50',  border:'border-orange-100', title:'text-orange-800', text:'text-orange-700' },
+      woocommerce: { bg:'bg-purple-50',  border:'border-purple-100', title:'text-purple-800', text:'text-purple-700' },
+      squarespace: { bg:'bg-gray-900 bg-opacity-10', border:'border-gray-900 border-opacity-20', title:'text-gray-900', text:'text-gray-700' }
+    };
+
+    // Helper to convert any YouTube URL into an embed URL
+    function toEmbedUrl(orig) {
+      let id = '';
+      try {
+        const u = new URL(orig);
+        id = u.hostname.includes('youtu.be')
+          ? u.pathname.slice(1)
+          : u.searchParams.get('v');
+      } catch {
+        const parts = orig.split('v=');
+        if (parts[1]) id = parts[1].split('&')[0];
+      }
+      return id
+        ? `https://www.youtube.com/embed/${id}?autoplay=1`
+        : orig;
+    }
+
+    // Platforms & tutorials data
+    const platforms = {
+      shopify:     { name:"Shopify",     logo:"/images/ic-shopify.svg" },
+      etsy:        { name:"Etsy",        logo:"/images/ic-esty.png"    },
+      woocommerce: { name:"WooCommerce", logo:"/images/woocom.jpg" },
+      squarespace: { name:"Squarespace", logo:"/images/ic-sspace.png" }
+    };
+
+    const tutorials = {
+      shopify: [
+        { id:"shopify-1",  video:"https://www.youtube.com/watch?v=F3vEOp8p07M", thumbnail:"https://img.youtube.com/vi/F3vEOp8p07M/mqdefault.jpg", name:"1. Welcome to OwnPrint | Print-On-Demand Jewelry Made Easy", description:"Discover OwnPrint, your print-on-demand jewelry partner. Sell custom jewelry online—no inventory, engraving, or shipping hassles!" },
+        { id:"shopify-2",  video:"https://www.youtube.com/watch?v=fZzA0Y2nvog", thumbnail:"https://img.youtube.com/vi/fZzA0Y2nvog/mqdefault.jpg", name:"2. How to Connect Your Shopify Store to OwnPrint", description:"Quickly and securely connect your Shopify store with OwnPrint for streamlined product management and seamless order fulfillment." },
+        { id:"shopify-3",  video:"https://www.youtube.com/watch?v=IHtepEBxEGY", thumbnail:"https://img.youtube.com/vi/IHtepEBxEGY/mqdefault.jpg", name:"3. How to Import Jewelry Products from OwnPrint to Shopify", description:"Learn how to easily add, customize, and publish jewelry products directly from OwnPrint to your Shopify store, including setting up message cards, images, pricing, and listings." },
+        { id:"shopify-4",  video:"https://www.youtube.com/watch?v=SNW61wZBjh4", thumbnail:"https://img.youtube.com/vi/SNW61wZBjh4/mqdefault.jpg", name:"4. How to Collect Engraving Details from Your Customers", description:"Learn how to automatically and accurately collect engraving details from your customers on Shopify using a simple third-party app integration." },
+        { id:"shopify-5",  video:"https://www.youtube.com/watch?v=_Z2Cfj51pJE", thumbnail:"https://img.youtube.com/vi/_Z2Cfj51pJE/mqdefault.jpg", name:"5. How to Add Custom Message Cards to Your Products", description:"Learn how to easily add personalized message cards to your OwnPrint jewelry products, making each order more meaningful and memorable." },
+        { id:"shopify-6",  video:"https://www.youtube.com/watch?v=aPsU8FNSgkk", thumbnail:"https://img.youtube.com/vi/aPsU8FNSgkk/mqdefault.jpg", name:"6. How to Upload Your Designs to Any Jewelry Shape", description:"Discover how easy it is to customize OwnPrint's jewelry shapes with your unique designs—perfect for creating personalized jewelry collections for your store in any niche." },
+        { id:"shopify-7",  video:"https://www.youtube.com/watch?v=owUlE0BSO-w", thumbnail:"https://img.youtube.com/vi/owUlE0BSO-w/mqdefault.jpg", name:"7. How to Set Up Branded Thank-You Cards", description:"Boost customer satisfaction and encourage repeat purchases by adding custom-branded thank-you cards to your jewelry orders. Simple, affordable, and effective." },
+        { id:"shopify-8",  video:"https://www.youtube.com/watch?v=-vl76WXTX3g", thumbnail:"https://img.youtube.com/vi/-vl76WXTX3g/mqdefault.jpg", name:"8. How to Add Premium Branded Jewelry Boxes with Your Logo", description:"Elevate your jewelry brand with premium packaging! Learn how to order custom-branded jewelry boxes featuring your logo, enhancing your customer's unboxing experience and brand reputation." },
+        { id:"shopify-9",  video:"https://www.youtube.com/watch?v=wT9E8lbZJKw", thumbnail:"https://img.youtube.com/vi/wT9E8lbZJKw/mqdefault.jpg", name:"9. How to Process Your Orders", description:"See exactly how to process your orders—from reviewing engraving details and making order changes to adding files, additional notes and paying for the order. Quick and easy!" },
+        { id:"shopify-10", video:"https://www.youtube.com/watch?v=B7asi3XZgmo", thumbnail:"https://img.youtube.com/vi/B7asi3XZgmo/mqdefault.jpg", name:"10. Creating a Jewelry Design in Canva", description:"Learn how to prepare and size a design so it fits our templates properly." }
+      ],
+      etsy: [
+        { id:"etsy-1", video:"https://youtu.be/F3vEOp8p07M", thumbnail:"https://img.youtube.com/vi/F3vEOp8p07M/mqdefault.jpg", name:"1. Launch Your Jewelry Business with OwnPrint | Print-On-Demand Made Easy", description:"Discover OwnPrint, your print-on-demand jewelry partner. Learn how you can easily create and sell custom jewelry online—no inventory, engraving, or shipping hassles!" },
+        { id:"etsy-2", video:"https://youtu.be/flNC_8oiS50", thumbnail:"https://img.youtube.com/vi/flNC_8oiS50/mqdefault.jpg", name:"2. How to Connect Your Etsy Store to OwnPrint | Step-by-Step Guide", description:"Follow this quick step-by-step guide to securely connect your Etsy shop with OwnPrint, simplifying order fulfillment and product management." },
+        { id:"etsy-3", video:"https://youtu.be/aE9xPM0Kj8c", thumbnail:"https://img.youtube.com/vi/aE9xPM0Kj8c/mqdefault.jpg", name:"3. How to Import Jewelry Products from OwnPrint to Etsy", description:"Learn how to easily add, customize, and publish jewelry products directly from OwnPrint to your Etsy store, including message cards, photos, and listings setup." },
+        { id:"etsy-4", video:"https://youtu.be/wT9E8lbZJKw", thumbnail:"https://img.youtube.com/vi/wT9E8lbZJKw/mqdefault.jpg", name:"4. How to Process Your Jewelry Orders on OwnPrint", description:"See exactly how to process your customer orders on OwnPrint—from reviewing engraving details and making order edits to payment and fulfillment. Quick and easy!" },
+        { id:"etsy-5", video:"https://youtu.be/owUlE0BSO-w", thumbnail:"https://img.youtube.com/vi/owUlE0BSO-w/mqdefault.jpg", name:"5. How to Set Up Branded Thank-You Cards with OwnPrint", description:"Boost customer satisfaction and encourage repeat purchases by adding custom-branded thank-you cards to your jewelry orders. Simple, affordable, and effective." },
+        { id:"etsy-6", video:"https://youtu.be/-vl76WXTX3g", thumbnail:"https://img.youtube.com/vi/-vl76WXTX3g/mqdefault.jpg", name:"6. How to Add Premium Branded Jewelry Boxes with Your Logo", description:"Elevate your jewelry brand with premium packaging! Learn how to order custom-branded jewelry boxes featuring your logo, enhancing your customer's unboxing experience and brand reputation." },
+        { id:"etsy-7", video:"https://youtu.be/_Z2Cfj51pJE", thumbnail:"https://img.youtube.com/vi/_Z2Cfj51pJE/mqdefault.jpg", name:"7. How to Add Custom Message Cards to Your Jewelry Orders", description:"Learn how to easily add personalized message cards to your OwnPrint jewelry products, making each order more meaningful and memorable." },
+        { id:"etsy-8", video:"https://youtu.be/aPsU8FNSgkk", thumbnail:"https://img.youtube.com/vi/aPsU8FNSgkk/mqdefault.jpg", name:"8. How to Upload Your Designs to OwnPrint Jewelry Templates", description:"Discover how easy it is to customize OwnPrint’s jewelry shapes with your unique designs—perfect for personalized collections." },
+        { id:"etsy-9", video:"https://youtu.be/B7asi3XZgmo", thumbnail:"https://img.youtube.com/vi/B7asi3XZgmo/mqdefault.jpg", name:"9. Creating a Jewelry Design in Canva", description:"Learn how to prepare your design before adding it onto any jewelry shape." }
+      ],
+      woocommerce: [
+        // only the welcome video
+        { id:"woo-1", video:"https://youtu.be/F3vEOp8p07M", thumbnail:"https://img.youtube.com/vi/F3vEOp8p07M/mqdefault.jpg", name:"1. Welcome to OwnPrint | Print-On-Demand Jewelry Made Easy", description:"Discover OwnPrint, your print-on-demand jewelry partner. Learn how you can easily create and sell custom jewelry online—no inventory or shipping hassles!" }
+      ],
+      squarespace: [
+        // only the welcome video
+        { id:"square-1", video:"https://youtu.be/F3vEOp8p07M", thumbnail:"https://img.youtube.com/vi/F3vEOp8p07M/mqdefault.jpg", name:"1. Welcome to OwnPrint | Print-On-Demand Jewelry Made Easy", description:"Discover OwnPrint, your print-on-demand jewelry partner. Learn how you can easily create and sell custom jewelry online—no inventory or shipping hassles!" }
+      ]
+    };
+
+    // State & refs
+    let currentPlatform = 'shopify', selectedVideoId;
+    const completed = {
+      shopify:new Set(), etsy:new Set(),
+      woocommerce:new Set(), squarespace:new Set()
+    };
+
+    const selectorEl      = document.getElementById('platform-selector');
+    const introEl         = document.getElementById('intro');
+    const introTitleEl    = document.getElementById('intro-title');
+    const introTextEl     = document.getElementById('intro-text');
+    const bannerEl        = document.getElementById('platform-banner');
+    const videoListEl     = document.getElementById('video-list');
+    const searchInputEl   = document.getElementById('search-input');
+    const searchResultsEl = document.getElementById('search-results');
+    const clearSearchBtn  = document.getElementById('clear-search');
+    const progressBarEl   = document.getElementById('progress-bar');
+    const progressTextEl  = document.getElementById('progress-text');
+    const modalEl         = document.getElementById('video-modal');
+    const iframeEl        = document.getElementById('modal-iframe');
+    const modalTitleEl    = document.getElementById('modal-title');
+    const modalDescEl     = document.getElementById('modal-description');
+    const closeBtn        = document.getElementById('close-modal');
+    // const markBtn         = document.getElementById('mark-completed');
+
+    // show “just launched” banner on WooCommerce & Squarespace
+    function renderBanner() {
+      if (currentPlatform === 'woocommerce') {
+        bannerEl.innerHTML = `
+          <section class="mb-6 p-4 bg-purple-50 border border-purple-100 rounded-lg">
+            <p class="font-medium text-purple-800">
+              🚀 We’ve just launched our WooCommerce integration! All steps work exactly the same as Shopify—check out the Shopify tab for full tutorials.
+            </p>
+          </section>`;
+      } else if (currentPlatform === 'squarespace') {
+        bannerEl.innerHTML = `
+          <section class="mb-6 p-4 bg-gray-100 border border-gray-200 rounded-lg">
+            <p class="font-medium text-gray-900">
+              🚀 We’ve just launched our Squarespace integration! All steps work exactly the same as Shopify—check out the Shopify tab for full tutorials.
+            </p>
+          </section>`;
+      } else {
+        bannerEl.innerHTML = '';
+      }
+    }
+
+    // close modal helper
+    function closeModal() {
+      modalEl.classList.add('hidden');
+      iframeEl.src = '';
+    }
+
+    // update progress bar
+    function updateProgress() {
+      const total = tutorials[currentPlatform].length;
+      const done  = completed[currentPlatform].size;
+      const pct   = total ? (done/total)*100 : 0;
+      progressBarEl.style.width  = pct + '%';
+      progressTextEl.textContent = `${done}/${total} completed`;
+    }
+
+    // render platform tabs
+    function renderPlatforms() {
+      selectorEl.innerHTML = '';
+      Object.entries(platforms).forEach(([key,{name,logo}]) => {
+        const active = key === currentPlatform;
+        const c = platformColors[key];
+        const btn = document.createElement('button');
+        btn.className = `
+          p-4 flex flex-col items-center rounded-lg transition-all
+          ${active
+            ? `${c.bg} border-2 ${c.border}`
+            : 'bg-white border-2 border-gray-200 hover:border-gray-300'}`;
+        btn.style.width = '120px';
+        btn.innerHTML = `
+          <div class="w-10 h-10 mb-2 flex items-center justify-center">
+            <img src="${logo}" alt="${name}" class="max-w-full max-h-full"/>
+          </div>
+          <span class="text-sm font-medium ${active ? c.title : 'text-gray-700'}">${name}</span>`;
+        btn.onclick = () => {
+          currentPlatform = key;
+          // update intro styling & text
+          introEl.className      = `${c.bg} border ${c.border} rounded-lg p-4 mb-6`;
+          introTitleEl.className = `text-lg font-semibold ${c.title} mb-2`;
+          introTextEl.className  = c.text;
+          introTitleEl.textContent = `Welcome to Your ${name} Integration`;
+
+          renderBanner();
+          renderPlatforms();
+          renderVideos();
+          updateProgress();
+        };
+        selectorEl.appendChild(btn);
+      });
+    }
+
+    // render videos list
+    function renderVideos() {
+      const vids = tutorials[currentPlatform];
+      videoListEl.innerHTML = vids.map(v => {
+        const done = completed[currentPlatform].has(v.id);
+        return `
+          <div class="video-card flex items-start bg-white rounded-lg shadow-sm p-4 mb-4 hover:shadow-md cursor-pointer"
+               data-id="${v.id}" data-video="${v.video}" data-name="${v.name}" data-desc="${v.description}">
+            <div class="relative mr-4 flex-shrink-0">
+              <img src="${v.thumbnail}" alt="${v.name}" class="w-32 h-24 rounded object-cover"/>
+              <div class="absolute inset-0 flex items-center justify-center">
+                <svg class="w-8 h-8 text-white opacity-80" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+              </div>
+              <div class="check-icon ${done?'':'hidden'} absolute -top-2 -right-2 bg-green-500 rounded-full p-1">
+                <svg class="w-4 h-4 text-white" fill="currentColor"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg>
+              </div>
+            </div>
+            <div class="flex-grow">
+              <h3 class="video-title font-medium ${done?'line-through text-gray-500':'text-gray-900'}">${v.name}</h3>
+              <p class="text-gray-600 text-sm mt-1">${v.description}</p>
+            </div>
+          </div>`;
+      }).join('') || `<p class="text-center text-gray-500 py-8">No tutorials available.</p>`;
+
+      document.querySelectorAll('.video-card').forEach(card => {
+        card.onclick = () => {
+          selectedVideoId = card.dataset.id;
+          iframeEl.src = toEmbedUrl(card.dataset.video);
+          modalTitleEl.textContent = card.dataset.name;
+          modalDescEl.textContent = card.dataset.desc;
+          // markBtn.style.display = completed[currentPlatform].has(selectedVideoId) ? 'none' : 'block';
+          modalEl.classList.remove('hidden');
+        };
+      });
+    }
+
+    // build search index
+    function getIndex() {
+      return Object.entries(tutorials).flatMap(([plat, vids]) =>
+        vids.map(v => ({
+          platform: plat,
+          id:       v.id,
+          title:    v.name,
+          text:     (v.name + ' ' + v.description).toLowerCase(),
+          thumbnail:v.thumbnail,
+          description:v.description
+        }))
+      );
+    }
+
+    // search logic
+    function searchContent(q) {
+      q = q.toLowerCase().trim();
+      if (!q) return [];
+      return getIndex().filter(i => i.text.includes(q)).sort((a,b) => {
+        const aT = a.title.includes(q), bT = b.title.includes(q);
+        if (aT && !bT) return -1;
+        if (!aT && bT) return 1;
+        const aM = a.platform === currentPlatform, bM = b.platform === currentPlatform;
+        if (aM && !bM) return -1;
+        if (!aM && bM) return 1;
+        return 0;
+      });
+    }
+
+    // render search results
+    function renderSearchResults(results) {
+      if (!results.length) {
+        searchResultsEl.innerHTML = `<div class="p-4 text-center text-gray-500">No results found.</div>`;
+        searchResultsEl.classList.remove('hidden');
+        return;
+      }
+      searchResultsEl.innerHTML = results.map(r => `
+        <div class="search-result p-3 border-b border-gray-100 hover:bg-gray-50 cursor-pointer flex items-start"
+             data-platform="${r.platform}" data-id="${r.id}">
+          <div class="flex-shrink-0 mr-3">
+            <div class="w-12 h-12 bg-gray-100 rounded overflow-hidden">
+              <img src="${r.thumbnail}" alt="${r.title}" class="w-full h-full object-cover"/>
+            </div>
+          </div>
+          <div>
+            <div class="flex items-center">
+              <svg class="w-4 h-4 text-blue-500 mr-1" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+              <span class="text-sm font-medium text-gray-900">${r.title}</span>
+              <span class="ml-2 text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded">${platforms[r.platform].name}</span>
+            </div>
+            <p class="text-xs text-gray-600 mt-1">${r.description}</p>
+          </div>
+        </div>`).join('');
+      searchResultsEl.classList.remove('hidden');
+
+      document.querySelectorAll('.search-result').forEach(el => {
+        el.onclick = () => {
+          const plat = el.dataset.platform, id = el.dataset.id;
+          if (plat !== currentPlatform) {
+            // switch platform
+            const c = platformColors[plat];
+            currentPlatform = plat;
+            introEl.className      = `${c.bg} border ${c.border} rounded-lg p-4 mb-6`;
+            introTitleEl.className = `text-lg font-semibold ${c.title} mb-2`;
+            introTextEl.className  = c.text;
+            introTitleEl.textContent = `Welcome to Your ${platforms[plat].name} Integration`;
+            renderBanner();
+            renderPlatforms();
+            renderVideos();
+            updateProgress();
+          }
+          // open the selected video
+          const card = document.querySelector(`.video-card[data-id="${id}"]`);
+          card.scrollIntoView({ behavior:'smooth', block:'center' });
+          card.click();
+          clearSearch();
+        };
+      });
+    }
+
+    function clearSearch() {
+      searchInputEl.value = '';
+      clearSearchBtn.classList.add('hidden');
+      searchResultsEl.classList.add('hidden');
+    }
+
+    // Modal controls
+    closeBtn.onclick = closeModal;
+    // markBtn.onclick = () => {
+    //   if (!selectedVideoId) return;
+    //   completed[currentPlatform].add(selectedVideoId);
+    //   updateProgress();
+    //   const card = document.querySelector(`.video-card[data-id="${selectedVideoId}"]`);
+    //   card.querySelector('.check-icon').classList.remove('hidden');
+    //   card.querySelector('.video-title').classList.add('line-through','text-gray-500');
+    //   markBtn.style.display = 'none';
+    // };
+
+    // click outside to close
+    modalEl.addEventListener('click', e => {
+      if (e.target === modalEl) closeModal();
+    });
+
+    // Esc handling
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') {
+        if (!searchResultsEl.classList.contains('hidden')) clearSearch();
+        else if (!modalEl.classList.contains('hidden')) closeModal();
+      }
+    });
+
+    // Search input listener
+    searchInputEl.addEventListener('input', e => {
+      const q = e.target.value;
+      if (!q.trim()) { clearSearch(); return; }
+      clearSearchBtn.classList.remove('hidden');
+      renderSearchResults(searchContent(q));
+    });
+    clearSearchBtn.addEventListener('click', clearSearch);
+    document.addEventListener('click', e => {
+      if (!searchInputEl.contains(e.target) &&
+          !searchResultsEl.contains(e.target) &&
+          !clearSearchBtn.contains(e.target)) {
+        searchResultsEl.classList.add('hidden');
+      }
+    });
+
+    // Initial render
+    renderBanner();
+    renderPlatforms();
+    renderVideos();
+    updateProgress();
+  </script>
+</body>
+</html>
