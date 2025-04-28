@@ -195,8 +195,8 @@
     const searchInputEl   = document.getElementById('search-input');
     const searchResultsEl = document.getElementById('search-results');
     const clearSearchBtn  = document.getElementById('clear-search');
-    const progressBarEl   = document.getElementById('progress-bar');
-    const progressTextEl  = document.getElementById('progress-text');
+    // const progressBarEl   = document.getElementById('progress-bar');
+    // const progressTextEl  = document.getElementById('progress-text');
     const modalEl         = document.getElementById('video-modal');
     const iframeEl        = document.getElementById('modal-iframe');
     const modalTitleEl    = document.getElementById('modal-title');
@@ -232,13 +232,13 @@
     }
 
     // update progress bar
-    function updateProgress() {
-      const total = tutorials[currentPlatform].length;
-      const done  = completed[currentPlatform].size;
-      const pct   = total ? (done/total)*100 : 0;
-      progressBarEl.style.width  = pct + '%';
-      progressTextEl.textContent = `${done}/${total} completed`;
-    }
+    // function updateProgress() {
+    //   const total = tutorials[currentPlatform].length;
+    //   const done  = completed[currentPlatform].size;
+    //   const pct   = total ? (done/total)*100 : 0;
+      // progressBarEl.style.width  = pct + '%';
+      // progressTextEl.textContent = `${done}/${total} completed`;
+    // }
 
     // render platform tabs
     function renderPlatforms() {
@@ -269,7 +269,7 @@
           renderBanner();
           renderPlatforms();
           renderVideos();
-          updateProgress();
+          // updateProgress();
         };
         selectorEl.appendChild(btn);
       });
@@ -380,7 +380,7 @@
             renderBanner();
             renderPlatforms();
             renderVideos();
-            updateProgress();
+            // updateProgress();
           }
           // open the selected video
           const card = document.querySelector(`.video-card[data-id="${id}"]`);
@@ -442,7 +442,7 @@
     renderBanner();
     renderPlatforms();
     renderVideos();
-    updateProgress();
+    // updateProgress();
   </script>
 </body>
 </html>
