@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -12,21 +13,35 @@
     .brand-gradient {
       background: linear-gradient(to right, #e6478d, #4c1d95);
     }
+
     .brand-btn {
       background: linear-gradient(to right, #e6478d, #4c1d95);
     }
+
     .brand-btn:hover {
       opacity: 0.9;
     }
   </style>
+
+  <script>
+    // 1) Block if not inside an iframe:
+    if (window.self === window.top) {
+      document.documentElement.classList.add('no-parent');
+      document.body.innerHTML = '<h1>Access Denied</h1><p>This page cannot be opened directly.</p>';
+      // stop any further script execution
+      throw new Error('No parent window detected');
+    }
+  </script>
 </head>
+
 <body class="bg-gray-50 min-h-screen">
 
   <!-- Header -->
   <header class="bg-white shadow-sm">
     <div class="container mx-auto py-6 px-4">
       <h1 class="text-2xl font-bold text-gray-800">Getting Started with OwnPrint</h1>
-      <p class="text-gray-600">Easy-to-follow tutorials to connect your store, add products, and master the OwnPrint app.</p>
+      <p class="text-gray-600">Easy-to-follow tutorials to connect your store, add products, and master the OwnPrint
+        app.</p>
     </div>
   </header>
 
@@ -42,7 +57,8 @@
         Welcome to Your Shopify Integration
       </h2>
       <p id="intro-text" class="text-green-700">
-        These short, practical tutorials will guide you step-by-step from connecting your store and importing your first products, to mastering all the key features of the app.
+        These short, practical tutorials will guide you step-by-step from connecting your store and importing your first
+        products, to mastering all the key features of the app.
       </p>
     </section>
 
@@ -55,18 +71,19 @@
         <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
           <svg class="w-4 h-4 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+              d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
           </svg>
         </div>
         <input type="search" id="search-input"
-               class="block w-full p-3 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-white focus:ring-blue-500 focus:border-blue-500"
-               placeholder="Search for tutorials...">
-        <button id="clear-search" class="absolute right-2.5 bottom-2.5 hidden bg-gray-200 hover:bg-gray-300 rounded-lg px-3 py-1 text-gray-700 text-sm">
+          class="block w-full p-3 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-white focus:ring-blue-500 focus:border-blue-500"
+          placeholder="Search for tutorials...">
+        <button id="clear-search"
+          class="absolute right-2.5 bottom-2.5 hidden bg-gray-200 hover:bg-gray-300 rounded-lg px-3 py-1 text-gray-700 text-sm">
           Clear
         </button>
       </div>
       <div id="search-results"
-           class="hidden mt-2 bg-white border border-gray-200 rounded-lg shadow-sm max-h-80 overflow-y-auto z-20 absolute left-0 right-0">
+        class="hidden mt-2 bg-white border border-gray-200 rounded-lg shadow-sm max-h-80 overflow-y-auto z-20 absolute left-0 right-0">
       </div>
     </section>
 
@@ -114,10 +131,10 @@
   <script>
     // Color schemes
     const platformColors = {
-      shopify:     { bg:'bg-green-50',   border:'border-green-100', title:'text-green-800',   text:'text-green-700' },
-      etsy:        { bg:'bg-orange-50',  border:'border-orange-100', title:'text-orange-800', text:'text-orange-700' },
-      woocommerce: { bg:'bg-purple-50',  border:'border-purple-100', title:'text-purple-800', text:'text-purple-700' },
-      squarespace: { bg:'bg-gray-900 bg-opacity-10', border:'border-gray-900 border-opacity-20', title:'text-gray-900', text:'text-gray-700' }
+      shopify: { bg: 'bg-green-50', border: 'border-green-100', title: 'text-green-800', text: 'text-green-700' },
+      etsy: { bg: 'bg-orange-50', border: 'border-orange-100', title: 'text-orange-800', text: 'text-orange-700' },
+      woocommerce: { bg: 'bg-purple-50', border: 'border-purple-100', title: 'text-purple-800', text: 'text-purple-700' },
+      squarespace: { bg: 'bg-gray-900 bg-opacity-10', border: 'border-gray-900 border-opacity-20', title: 'text-gray-900', text: 'text-gray-700' }
     };
 
     // Helper to convert any YouTube URL into an embed URL
@@ -139,70 +156,70 @@
 
     // Platforms & tutorials data
     const platforms = {
-      shopify:     { name:"Shopify",     logo:"/htmlui/images/ic-shopify.svg" },
-      etsy:        { name:"Etsy",        logo:"/htmlui/images/ic-esty.png"    },
-      woocommerce: { name:"WooCommerce", logo:"/htmlui/images/woocom.jpg" },
-      squarespace: { name:"Squarespace", logo:"/htmlui/images/ic-sspace.png" }
+      shopify: { name: "Shopify", logo: "/htmlui/images/ic-shopify.svg" },
+      etsy: { name: "Etsy", logo: "/htmlui/images/ic-esty.png" },
+      woocommerce: { name: "WooCommerce", logo: "/htmlui/images/woocom.jpg" },
+      squarespace: { name: "Squarespace", logo: "/htmlui/images/ic-sspace.png" }
     };
 
     const tutorials = {
       shopify: [
-        { id:"shopify-1",  video:"https://www.youtube.com/watch?v=F3vEOp8p07M", thumbnail:"https://img.youtube.com/vi/F3vEOp8p07M/mqdefault.jpg", name:"1. Welcome to OwnPrint | Print-On-Demand Jewelry Made Easy", description:"Discover OwnPrint, your print-on-demand jewelry partner. Sell custom jewelry online—no inventory, engraving, or shipping hassles!" },
-        { id:"shopify-2",  video:"https://www.youtube.com/watch?v=fZzA0Y2nvog", thumbnail:"https://img.youtube.com/vi/fZzA0Y2nvog/mqdefault.jpg", name:"2. How to Connect Your Shopify Store to OwnPrint", description:"Quickly and securely connect your Shopify store with OwnPrint for streamlined product management and seamless order fulfillment." },
-        { id:"shopify-3",  video:"https://www.youtube.com/watch?v=IHtepEBxEGY", thumbnail:"https://img.youtube.com/vi/IHtepEBxEGY/mqdefault.jpg", name:"3. How to Import Jewelry Products from OwnPrint to Shopify", description:"Learn how to easily add, customize, and publish jewelry products directly from OwnPrint to your Shopify store, including setting up message cards, images, pricing, and listings." },
-        { id:"shopify-4",  video:"https://www.youtube.com/watch?v=SNW61wZBjh4", thumbnail:"https://img.youtube.com/vi/SNW61wZBjh4/mqdefault.jpg", name:"4. How to Collect Engraving Details from Your Customers", description:"Learn how to automatically and accurately collect engraving details from your customers on Shopify using a simple third-party app integration." },
-        { id:"shopify-5",  video:"https://www.youtube.com/watch?v=_Z2Cfj51pJE", thumbnail:"https://img.youtube.com/vi/_Z2Cfj51pJE/mqdefault.jpg", name:"5. How to Add Custom Message Cards to Your Products", description:"Learn how to easily add personalized message cards to your OwnPrint jewelry products, making each order more meaningful and memorable." },
-        { id:"shopify-6",  video:"https://www.youtube.com/watch?v=aPsU8FNSgkk", thumbnail:"https://img.youtube.com/vi/aPsU8FNSgkk/mqdefault.jpg", name:"6. How to Upload Your Designs to Any Jewelry Shape", description:"Discover how easy it is to customize OwnPrint's jewelry shapes with your unique designs—perfect for creating personalized jewelry collections for your store in any niche." },
-        { id:"shopify-7",  video:"https://www.youtube.com/watch?v=owUlE0BSO-w", thumbnail:"https://img.youtube.com/vi/owUlE0BSO-w/mqdefault.jpg", name:"7. How to Set Up Branded Thank-You Cards", description:"Boost customer satisfaction and encourage repeat purchases by adding custom-branded thank-you cards to your jewelry orders. Simple, affordable, and effective." },
-        { id:"shopify-8",  video:"https://www.youtube.com/watch?v=-vl76WXTX3g", thumbnail:"https://img.youtube.com/vi/-vl76WXTX3g/mqdefault.jpg", name:"8. How to Add Premium Branded Jewelry Boxes with Your Logo", description:"Elevate your jewelry brand with premium packaging! Learn how to order custom-branded jewelry boxes featuring your logo, enhancing your customer's unboxing experience and brand reputation." },
-        { id:"shopify-9",  video:"https://www.youtube.com/watch?v=wT9E8lbZJKw", thumbnail:"https://img.youtube.com/vi/wT9E8lbZJKw/mqdefault.jpg", name:"9. How to Process Your Orders", description:"See exactly how to process your orders—from reviewing engraving details and making order changes to adding files, additional notes and paying for the order. Quick and easy!" },
-        { id:"shopify-10", video:"https://www.youtube.com/watch?v=B7asi3XZgmo", thumbnail:"https://img.youtube.com/vi/B7asi3XZgmo/mqdefault.jpg", name:"10. Creating a Jewelry Design in Canva", description:"Learn how to prepare and size a design so it fits our templates properly." }
+        { id: "shopify-1", video: "https://www.youtube.com/watch?v=F3vEOp8p07M", thumbnail: "https://img.youtube.com/vi/F3vEOp8p07M/mqdefault.jpg", name: "1. Welcome to OwnPrint | Print-On-Demand Jewelry Made Easy", description: "Discover OwnPrint, your print-on-demand jewelry partner. Sell custom jewelry online—no inventory, engraving, or shipping hassles!" },
+        { id: "shopify-2", video: "https://www.youtube.com/watch?v=fZzA0Y2nvog", thumbnail: "https://img.youtube.com/vi/fZzA0Y2nvog/mqdefault.jpg", name: "2. How to Connect Your Shopify Store to OwnPrint", description: "Quickly and securely connect your Shopify store with OwnPrint for streamlined product management and seamless order fulfillment." },
+        { id: "shopify-3", video: "https://www.youtube.com/watch?v=IHtepEBxEGY", thumbnail: "https://img.youtube.com/vi/IHtepEBxEGY/mqdefault.jpg", name: "3. How to Import Jewelry Products from OwnPrint to Shopify", description: "Learn how to easily add, customize, and publish jewelry products directly from OwnPrint to your Shopify store, including setting up message cards, images, pricing, and listings." },
+        { id: "shopify-4", video: "https://www.youtube.com/watch?v=SNW61wZBjh4", thumbnail: "https://img.youtube.com/vi/SNW61wZBjh4/mqdefault.jpg", name: "4. How to Collect Engraving Details from Your Customers", description: "Learn how to automatically and accurately collect engraving details from your customers on Shopify using a simple third-party app integration." },
+        { id: "shopify-5", video: "https://www.youtube.com/watch?v=_Z2Cfj51pJE", thumbnail: "https://img.youtube.com/vi/_Z2Cfj51pJE/mqdefault.jpg", name: "5. How to Add Custom Message Cards to Your Products", description: "Learn how to easily add personalized message cards to your OwnPrint jewelry products, making each order more meaningful and memorable." },
+        { id: "shopify-6", video: "https://www.youtube.com/watch?v=aPsU8FNSgkk", thumbnail: "https://img.youtube.com/vi/aPsU8FNSgkk/mqdefault.jpg", name: "6. How to Upload Your Designs to Any Jewelry Shape", description: "Discover how easy it is to customize OwnPrint's jewelry shapes with your unique designs—perfect for creating personalized jewelry collections for your store in any niche." },
+        { id: "shopify-7", video: "https://www.youtube.com/watch?v=owUlE0BSO-w", thumbnail: "https://img.youtube.com/vi/owUlE0BSO-w/mqdefault.jpg", name: "7. How to Set Up Branded Thank-You Cards", description: "Boost customer satisfaction and encourage repeat purchases by adding custom-branded thank-you cards to your jewelry orders. Simple, affordable, and effective." },
+        { id: "shopify-8", video: "https://www.youtube.com/watch?v=-vl76WXTX3g", thumbnail: "https://img.youtube.com/vi/-vl76WXTX3g/mqdefault.jpg", name: "8. How to Add Premium Branded Jewelry Boxes with Your Logo", description: "Elevate your jewelry brand with premium packaging! Learn how to order custom-branded jewelry boxes featuring your logo, enhancing your customer's unboxing experience and brand reputation." },
+        { id: "shopify-9", video: "https://www.youtube.com/watch?v=wT9E8lbZJKw", thumbnail: "https://img.youtube.com/vi/wT9E8lbZJKw/mqdefault.jpg", name: "9. How to Process Your Orders", description: "See exactly how to process your orders—from reviewing engraving details and making order changes to adding files, additional notes and paying for the order. Quick and easy!" },
+        { id: "shopify-10", video: "https://www.youtube.com/watch?v=B7asi3XZgmo", thumbnail: "https://img.youtube.com/vi/B7asi3XZgmo/mqdefault.jpg", name: "10. Creating a Jewelry Design in Canva", description: "Learn how to prepare and size a design so it fits our templates properly." }
       ],
       etsy: [
-        { id:"etsy-1", video:"https://youtu.be/F3vEOp8p07M", thumbnail:"https://img.youtube.com/vi/F3vEOp8p07M/mqdefault.jpg", name:"1. Launch Your Jewelry Business with OwnPrint | Print-On-Demand Made Easy", description:"Discover OwnPrint, your print-on-demand jewelry partner. Learn how you can easily create and sell custom jewelry online—no inventory, engraving, or shipping hassles!" },
-        { id:"etsy-2", video:"https://youtu.be/flNC_8oiS50", thumbnail:"https://img.youtube.com/vi/flNC_8oiS50/mqdefault.jpg", name:"2. How to Connect Your Etsy Store to OwnPrint | Step-by-Step Guide", description:"Follow this quick step-by-step guide to securely connect your Etsy shop with OwnPrint, simplifying order fulfillment and product management." },
-        { id:"etsy-3", video:"https://youtu.be/aE9xPM0Kj8c", thumbnail:"https://img.youtube.com/vi/aE9xPM0Kj8c/mqdefault.jpg", name:"3. How to Import Jewelry Products from OwnPrint to Etsy", description:"Learn how to easily add, customize, and publish jewelry products directly from OwnPrint to your Etsy store, including message cards, photos, and listings setup." },
-        { id:"etsy-4", video:"https://youtu.be/wT9E8lbZJKw", thumbnail:"https://img.youtube.com/vi/wT9E8lbZJKw/mqdefault.jpg", name:"4. How to Process Your Jewelry Orders on OwnPrint", description:"See exactly how to process your customer orders on OwnPrint—from reviewing engraving details and making order edits to payment and fulfillment. Quick and easy!" },
-        { id:"etsy-5", video:"https://youtu.be/owUlE0BSO-w", thumbnail:"https://img.youtube.com/vi/owUlE0BSO-w/mqdefault.jpg", name:"5. How to Set Up Branded Thank-You Cards with OwnPrint", description:"Boost customer satisfaction and encourage repeat purchases by adding custom-branded thank-you cards to your jewelry orders. Simple, affordable, and effective." },
-        { id:"etsy-6", video:"https://youtu.be/-vl76WXTX3g", thumbnail:"https://img.youtube.com/vi/-vl76WXTX3g/mqdefault.jpg", name:"6. How to Add Premium Branded Jewelry Boxes with Your Logo", description:"Elevate your jewelry brand with premium packaging! Learn how to order custom-branded jewelry boxes featuring your logo, enhancing your customer's unboxing experience and brand reputation." },
-        { id:"etsy-7", video:"https://youtu.be/_Z2Cfj51pJE", thumbnail:"https://img.youtube.com/vi/_Z2Cfj51pJE/mqdefault.jpg", name:"7. How to Add Custom Message Cards to Your Jewelry Orders", description:"Learn how to easily add personalized message cards to your OwnPrint jewelry products, making each order more meaningful and memorable." },
-        { id:"etsy-8", video:"https://youtu.be/aPsU8FNSgkk", thumbnail:"https://img.youtube.com/vi/aPsU8FNSgkk/mqdefault.jpg", name:"8. How to Upload Your Designs to OwnPrint Jewelry Templates", description:"Discover how easy it is to customize OwnPrint’s jewelry shapes with your unique designs—perfect for personalized collections." },
-        { id:"etsy-9", video:"https://youtu.be/B7asi3XZgmo", thumbnail:"https://img.youtube.com/vi/B7asi3XZgmo/mqdefault.jpg", name:"9. Creating a Jewelry Design in Canva", description:"Learn how to prepare your design before adding it onto any jewelry shape." }
+        { id: "etsy-1", video: "https://youtu.be/F3vEOp8p07M", thumbnail: "https://img.youtube.com/vi/F3vEOp8p07M/mqdefault.jpg", name: "1. Launch Your Jewelry Business with OwnPrint | Print-On-Demand Made Easy", description: "Discover OwnPrint, your print-on-demand jewelry partner. Learn how you can easily create and sell custom jewelry online—no inventory, engraving, or shipping hassles!" },
+        { id: "etsy-2", video: "https://youtu.be/flNC_8oiS50", thumbnail: "https://img.youtube.com/vi/flNC_8oiS50/mqdefault.jpg", name: "2. How to Connect Your Etsy Store to OwnPrint | Step-by-Step Guide", description: "Follow this quick step-by-step guide to securely connect your Etsy shop with OwnPrint, simplifying order fulfillment and product management." },
+        { id: "etsy-3", video: "https://youtu.be/aE9xPM0Kj8c", thumbnail: "https://img.youtube.com/vi/aE9xPM0Kj8c/mqdefault.jpg", name: "3. How to Import Jewelry Products from OwnPrint to Etsy", description: "Learn how to easily add, customize, and publish jewelry products directly from OwnPrint to your Etsy store, including message cards, photos, and listings setup." },
+        { id: "etsy-4", video: "https://youtu.be/wT9E8lbZJKw", thumbnail: "https://img.youtube.com/vi/wT9E8lbZJKw/mqdefault.jpg", name: "4. How to Process Your Jewelry Orders on OwnPrint", description: "See exactly how to process your customer orders on OwnPrint—from reviewing engraving details and making order edits to payment and fulfillment. Quick and easy!" },
+        { id: "etsy-5", video: "https://youtu.be/owUlE0BSO-w", thumbnail: "https://img.youtube.com/vi/owUlE0BSO-w/mqdefault.jpg", name: "5. How to Set Up Branded Thank-You Cards with OwnPrint", description: "Boost customer satisfaction and encourage repeat purchases by adding custom-branded thank-you cards to your jewelry orders. Simple, affordable, and effective." },
+        { id: "etsy-6", video: "https://youtu.be/-vl76WXTX3g", thumbnail: "https://img.youtube.com/vi/-vl76WXTX3g/mqdefault.jpg", name: "6. How to Add Premium Branded Jewelry Boxes with Your Logo", description: "Elevate your jewelry brand with premium packaging! Learn how to order custom-branded jewelry boxes featuring your logo, enhancing your customer's unboxing experience and brand reputation." },
+        { id: "etsy-7", video: "https://youtu.be/_Z2Cfj51pJE", thumbnail: "https://img.youtube.com/vi/_Z2Cfj51pJE/mqdefault.jpg", name: "7. How to Add Custom Message Cards to Your Jewelry Orders", description: "Learn how to easily add personalized message cards to your OwnPrint jewelry products, making each order more meaningful and memorable." },
+        { id: "etsy-8", video: "https://youtu.be/aPsU8FNSgkk", thumbnail: "https://img.youtube.com/vi/aPsU8FNSgkk/mqdefault.jpg", name: "8. How to Upload Your Designs to OwnPrint Jewelry Templates", description: "Discover how easy it is to customize OwnPrint’s jewelry shapes with your unique designs—perfect for personalized collections." },
+        { id: "etsy-9", video: "https://youtu.be/B7asi3XZgmo", thumbnail: "https://img.youtube.com/vi/B7asi3XZgmo/mqdefault.jpg", name: "9. Creating a Jewelry Design in Canva", description: "Learn how to prepare your design before adding it onto any jewelry shape." }
       ],
       woocommerce: [
         // only the welcome video
-        { id:"woo-1", video:"https://youtu.be/F3vEOp8p07M", thumbnail:"https://img.youtube.com/vi/F3vEOp8p07M/mqdefault.jpg", name:"1. Welcome to OwnPrint | Print-On-Demand Jewelry Made Easy", description:"Discover OwnPrint, your print-on-demand jewelry partner. Learn how you can easily create and sell custom jewelry online—no inventory or shipping hassles!" }
+        { id: "woo-1", video: "https://youtu.be/F3vEOp8p07M", thumbnail: "https://img.youtube.com/vi/F3vEOp8p07M/mqdefault.jpg", name: "1. Welcome to OwnPrint | Print-On-Demand Jewelry Made Easy", description: "Discover OwnPrint, your print-on-demand jewelry partner. Learn how you can easily create and sell custom jewelry online—no inventory or shipping hassles!" }
       ],
       squarespace: [
         // only the welcome video
-        { id:"square-1", video:"https://youtu.be/F3vEOp8p07M", thumbnail:"https://img.youtube.com/vi/F3vEOp8p07M/mqdefault.jpg", name:"1. Welcome to OwnPrint | Print-On-Demand Jewelry Made Easy", description:"Discover OwnPrint, your print-on-demand jewelry partner. Learn how you can easily create and sell custom jewelry online—no inventory or shipping hassles!" }
+        { id: "square-1", video: "https://youtu.be/F3vEOp8p07M", thumbnail: "https://img.youtube.com/vi/F3vEOp8p07M/mqdefault.jpg", name: "1. Welcome to OwnPrint | Print-On-Demand Jewelry Made Easy", description: "Discover OwnPrint, your print-on-demand jewelry partner. Learn how you can easily create and sell custom jewelry online—no inventory or shipping hassles!" }
       ]
     };
 
     // State & refs
     let currentPlatform = 'shopify', selectedVideoId;
     const completed = {
-      shopify:new Set(), etsy:new Set(),
-      woocommerce:new Set(), squarespace:new Set()
+      shopify: new Set(), etsy: new Set(),
+      woocommerce: new Set(), squarespace: new Set()
     };
 
-    const selectorEl      = document.getElementById('platform-selector');
-    const introEl         = document.getElementById('intro');
-    const introTitleEl    = document.getElementById('intro-title');
-    const introTextEl     = document.getElementById('intro-text');
-    const bannerEl        = document.getElementById('platform-banner');
-    const videoListEl     = document.getElementById('video-list');
-    const searchInputEl   = document.getElementById('search-input');
+    const selectorEl = document.getElementById('platform-selector');
+    const introEl = document.getElementById('intro');
+    const introTitleEl = document.getElementById('intro-title');
+    const introTextEl = document.getElementById('intro-text');
+    const bannerEl = document.getElementById('platform-banner');
+    const videoListEl = document.getElementById('video-list');
+    const searchInputEl = document.getElementById('search-input');
     const searchResultsEl = document.getElementById('search-results');
-    const clearSearchBtn  = document.getElementById('clear-search');
-    const progressBarEl   = document.getElementById('progress-bar');
-    const progressTextEl  = document.getElementById('progress-text');
-    const modalEl         = document.getElementById('video-modal');
-    const iframeEl        = document.getElementById('modal-iframe');
-    const modalTitleEl    = document.getElementById('modal-title');
-    const modalDescEl     = document.getElementById('modal-description');
-    const closeBtn        = document.getElementById('close-modal');
-    const markBtn         = document.getElementById('mark-completed');
+    const clearSearchBtn = document.getElementById('clear-search');
+    const progressBarEl = document.getElementById('progress-bar');
+    const progressTextEl = document.getElementById('progress-text');
+    const modalEl = document.getElementById('video-modal');
+    const iframeEl = document.getElementById('modal-iframe');
+    const modalTitleEl = document.getElementById('modal-title');
+    const modalDescEl = document.getElementById('modal-description');
+    const closeBtn = document.getElementById('close-modal');
+    const markBtn = document.getElementById('mark-completed');
 
     // show “just launched” banner on WooCommerce & Squarespace
     function renderBanner() {
@@ -234,16 +251,16 @@
     // update progress bar
     function updateProgress() {
       const total = tutorials[currentPlatform].length;
-      const done  = completed[currentPlatform].size;
-      const pct   = total ? (done/total)*100 : 0;
-      progressBarEl.style.width  = pct + '%';
+      const done = completed[currentPlatform].size;
+      const pct = total ? (done / total) * 100 : 0;
+      progressBarEl.style.width = pct + '%';
       progressTextEl.textContent = `${done}/${total} completed`;
     }
 
     // render platform tabs
     function renderPlatforms() {
       selectorEl.innerHTML = '';
-      Object.entries(platforms).forEach(([key,{name,logo}]) => {
+      Object.entries(platforms).forEach(([key, { name, logo }]) => {
         const active = key === currentPlatform;
         const c = platformColors[key];
         const btn = document.createElement('button');
@@ -261,9 +278,9 @@
         btn.onclick = () => {
           currentPlatform = key;
           // update intro styling & text
-          introEl.className      = `${c.bg} border ${c.border} rounded-lg p-4 mb-6`;
+          introEl.className = `${c.bg} border ${c.border} rounded-lg p-4 mb-6`;
           introTitleEl.className = `text-lg font-semibold ${c.title} mb-2`;
-          introTextEl.className  = c.text;
+          introTextEl.className = c.text;
           introTitleEl.textContent = `Welcome to Your ${name} Integration`;
 
           renderBanner();
@@ -288,12 +305,12 @@
               <div class="absolute inset-0 flex items-center justify-center">
                 <svg class="w-8 h-8 text-white opacity-80" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
               </div>
-              <div class="check-icon ${done?'':'hidden'} absolute -top-2 -right-2 bg-green-500 rounded-full p-1">
+              <div class="check-icon ${done ? '' : 'hidden'} absolute -top-2 -right-2 bg-green-500 rounded-full p-1">
                 <svg class="w-4 h-4 text-white" fill="currentColor"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg>
               </div>
             </div>
             <div class="flex-grow">
-              <h3 class="video-title font-medium ${done?'line-through text-gray-500':'text-gray-900'}">${v.name}</h3>
+              <h3 class="video-title font-medium ${done ? 'line-through text-gray-500' : 'text-gray-900'}">${v.name}</h3>
               <p class="text-gray-600 text-sm mt-1">${v.description}</p>
             </div>
           </div>`;
@@ -316,11 +333,11 @@
       return Object.entries(tutorials).flatMap(([plat, vids]) =>
         vids.map(v => ({
           platform: plat,
-          id:       v.id,
-          title:    v.name,
-          text:     (v.name + ' ' + v.description).toLowerCase(),
-          thumbnail:v.thumbnail,
-          description:v.description
+          id: v.id,
+          title: v.name,
+          text: (v.name + ' ' + v.description).toLowerCase(),
+          thumbnail: v.thumbnail,
+          description: v.description
         }))
       );
     }
@@ -329,7 +346,7 @@
     function searchContent(q) {
       q = q.toLowerCase().trim();
       if (!q) return [];
-      return getIndex().filter(i => i.text.includes(q)).sort((a,b) => {
+      return getIndex().filter(i => i.text.includes(q)).sort((a, b) => {
         const aT = a.title.includes(q), bT = b.title.includes(q);
         if (aT && !bT) return -1;
         if (!aT && bT) return 1;
@@ -373,9 +390,9 @@
             // switch platform
             const c = platformColors[plat];
             currentPlatform = plat;
-            introEl.className      = `${c.bg} border ${c.border} rounded-lg p-4 mb-6`;
+            introEl.className = `${c.bg} border ${c.border} rounded-lg p-4 mb-6`;
             introTitleEl.className = `text-lg font-semibold ${c.title} mb-2`;
-            introTextEl.className  = c.text;
+            introTextEl.className = c.text;
             introTitleEl.textContent = `Welcome to Your ${platforms[plat].name} Integration`;
             renderBanner();
             renderPlatforms();
@@ -384,7 +401,7 @@
           }
           // open the selected video
           const card = document.querySelector(`.video-card[data-id="${id}"]`);
-          card.scrollIntoView({ behavior:'smooth', block:'center' });
+          card.scrollIntoView({ behavior: 'smooth', block: 'center' });
           card.click();
           clearSearch();
         };
@@ -405,7 +422,7 @@
       updateProgress();
       const card = document.querySelector(`.video-card[data-id="${selectedVideoId}"]`);
       card.querySelector('.check-icon').classList.remove('hidden');
-      card.querySelector('.video-title').classList.add('line-through','text-gray-500');
+      card.querySelector('.video-title').classList.add('line-through', 'text-gray-500');
       markBtn.style.display = 'none';
     };
 
@@ -432,8 +449,8 @@
     clearSearchBtn.addEventListener('click', clearSearch);
     document.addEventListener('click', e => {
       if (!searchInputEl.contains(e.target) &&
-          !searchResultsEl.contains(e.target) &&
-          !clearSearchBtn.contains(e.target)) {
+        !searchResultsEl.contains(e.target) &&
+        !clearSearchBtn.contains(e.target)) {
         searchResultsEl.classList.add('hidden');
       }
     });
@@ -445,4 +462,5 @@
     updateProgress();
   </script>
 </body>
+
 </html>
