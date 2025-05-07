@@ -119,7 +119,7 @@
     </div>
   </div>
 
-  <!-- <script>
+  <script>
     // configure your allowed parent hostname here:
     const ALLOWED_PARENT = 'app.ownprint.co';
 
@@ -135,19 +135,14 @@
     if (window.self === window.top) {
       denyAccess();
     } else {
-      // 2) Try reading parent’s hostname (will throw if cross-origin)
-      try {
-        const parentHost = window.top.location.hostname;
-        console.log(parentHost)
-        if (parentHost !== ALLOWED_PARENT) {
-          denyAccess();
-        }
-      } catch (err) {
-        // if we cannot read it, we assume it’s not allowed
+      // 2) Block if not allowed
+      const parentHost = window.top.location.hostname;
+      console.log(parentHost)
+      if (parentHost !== ALLOWED_PARENT) {
         denyAccess();
       }
     }
-  </script> -->
+  </script>
 
   <script>
     // Color schemes
