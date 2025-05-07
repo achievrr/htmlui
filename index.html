@@ -23,15 +23,6 @@
     }
   </style>
 
-  <script>
-    // 1) Block if not inside an iframe:
-    if (window.self === window.top) {
-      document.documentElement.classList.add('no-parent');
-      document.body.innerHTML = '<h1>Access Denied</h1><p>This page cannot be opened directly.</p>';
-      // stop any further script execution
-      throw new Error('No parent window detected');
-    }
-  </script>
 </head>
 
 <body class="bg-gray-50 min-h-screen">
@@ -127,6 +118,35 @@
       </div>
     </div>
   </div>
+
+  <script>
+    // configure your allowed parent hostname here:
+    const ALLOWED_PARENT = 'app.ownprint.co';
+
+    function denyAccess() {
+      document.documentElement.classList.add('no-parent');
+      document.body.innerHTML = '<h1>Access Denied</h1>'
+        + '<p>This page cannot be opened here.</p>';
+      // stop any further script execution
+      throw new Error('Unauthorized parent');
+    }
+
+    // 1) Block if not inside an iframe
+    if (window.self === window.top) {
+      denyAccess();
+    } else {
+      // 2) Try reading parent’s hostname (will throw if cross-origin)
+      try {
+        const parentHost = window.top.location.hostname;
+        if (parentHost !== ALLOWED_PARENT) {
+          denyAccess();
+        }
+      } catch (err) {
+        // if we cannot read it, we assume it’s not allowed
+        denyAccess();
+      }
+    }
+  </script>
 
   <script>
     // Color schemes
