@@ -120,28 +120,24 @@
   </div>
 
   <script>
-    // configure your allowed parent hostname here:
-    const ALLOWED_PARENT = 'app.ownprint.co';
+    const ALLOWED_ORIGIN = 'https://app.ownprint.co';
 
-    function denyAccess() {
-      document.documentElement.classList.add('no-parent');
+    function deny() {
       document.body.innerHTML = '<h1>Access Denied</h1>'
         + '<p>This page cannot be opened here.</p>';
-      // stop any further script execution
-      throw new Error('Unauthorized parent');
+      throw new Error('unauthorized');
     }
 
-    // 1) Block if not inside an iframe
-    if (window.self === window.top) {
-      denyAccess();
-    } else {
-      // 2) Block if not allowed
-      const parentHost = window.top.location.hostname;
-      console.log(parentHost)
-      if (parentHost !== ALLOWED_PARENT) {
-        denyAccess();
-      }
+    // must be in an iframe
+    if (window.self === window.top) deny();
+
+    // referrer is the parent’s URL (unless they’ve stripped it via referrer-policy)
+    const ref = document.referrer;
+    if (!ref || new URL(ref).origin !== ALLOWED_ORIGIN) {
+      deny();
     }
+
+    // if we get here, we’re embedded by the right host
   </script>
 
   <script>
